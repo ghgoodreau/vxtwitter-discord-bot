@@ -9,7 +9,7 @@ client.once(Events.ClientReady, () => {
 	console.log('Ready!');
 });
 
-client.on(Events.MessageCreate, (message) => {
+client.on(Events.MessageCreate, async (message) => {
   if (message.author.bot) return;
 
   const twitterLinkRegex = /https?:\/\/(www\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/\d+(?:\?[^\s]+)?/g;
@@ -21,7 +21,13 @@ client.on(Events.MessageCreate, (message) => {
       return match.replace('twitter.com', 'vxtwitter.com');
     });
 
-    message.reply(`Hey bud, here's a better link: ${modifiedMessage}`);
+    await message.reply(`Original message from ${message.author}:\n---------------------------------------------\n${modifiedMessage}`);
+
+    try {
+      await message.delete();
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
   }
 });
 
